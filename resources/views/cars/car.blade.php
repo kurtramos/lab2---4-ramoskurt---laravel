@@ -30,6 +30,23 @@
         <div class="px-4 py-5 sm:px-6 text-center">
     <h3 class="text-lg font-medium leading-6 text-gray-900">Cars List</h3>
     <p class="mt-1 max-w-2xl text-sm text-gray-500 mx-auto">Details of all the cars listed in our database.</p>
+    @if (session('success'))
+    <div class="bg-green-500 text-white p-4 rounded mb-4 relative">
+        <strong>{{ session('success') }}</strong>
+        <button type="button" class="absolute top-0 right-0 mt-1 mr-1 text-white" onclick="this.parentElement.style.display='none'">
+            &times;
+        </button>
+    </div>
+@endif
+
+@if (session('edit_success'))
+    <div class="bg-blue-500 text-white p-4 rounded mb-4 relative">
+        <strong>{{ session('edit_success') }}</strong>
+        <button type="button" class="absolute top-0 right-0 mt-1 mr-1 text-white" onclick="this.parentElement.style.display='none'">
+            &times;
+        </button>
+    </div>
+@endif
 </div>
  <!-- Add Car Button -->
  <a href="{{ route('addcar') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -60,11 +77,15 @@
                         </div>
                     </div>
                 </div>
+               
                 <table class="min-w-full leading-normal">
                     <thead>
                         <tr>
                             <th scope="col" class="px-5 py-3 bg-white border-b border-gray-200 text-gray-500 text-left text-sm uppercase font-normal">
                                 ID
+                            </th>
+                            <th scope="col" class="px-5 py-3 bg-white border-b border-gray-200 text-gray-500 text-left text-sm uppercase font-normal">
+                                USER ID
                             </th>
                             <th scope="col" class="px-5 py-3 bg-white border-b border-gray-200 text-gray-500 text-left text-sm uppercase font-normal">
                                 Brand
@@ -82,6 +103,9 @@
                                 Details
                             </th>
                             <th scope="col" class="px-5 py-3 bg-white border-b border-gray-200 text-gray-500 text-left text-sm uppercase font-normal">
+                                Create_at
+                            </th>
+                            <th scope="col" class="px-5 py-3 bg-white border-b border-gray-200 text-gray-500 text-left text-sm uppercase font-normal">
                                 Actions
                             </th>
                         </tr>
@@ -91,6 +115,9 @@
                         <tr>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-500">
                                 {{ $car->id }}
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-500">
+                                {{ $car->user->email}}
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-500">
                                 {{ $car->brand }}
@@ -106,6 +133,9 @@
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-500">
                                 {{ $car->details }}
+                            </td>
+                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-500">
+                                {{ $car->created_at }}
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                 <a href="{{ route('cars.edit', $car->id) }}" class="text-indigo-600 hover:text-indigo-900">

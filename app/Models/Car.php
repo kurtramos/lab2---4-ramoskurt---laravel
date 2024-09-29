@@ -13,15 +13,22 @@ class Car extends Model
      protected $table = 'cars';
      protected $fillable = [
         'brand', 
+        'user_id',
         'series', 
         'color', 
         'price_per_day', 
         'details',
+        'created_at',
     ];
 
-    // Define the relationship with reviews
-    public function reviews()
+    public function user()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasOne(User::class, 'id' , 'user_id');
     }
+
+    // Define the relationship with reviews
+    // public function reviews()
+    // {
+    //     return $this->hasMany(Review::class);
+    // }
 }

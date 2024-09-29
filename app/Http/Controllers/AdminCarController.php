@@ -10,7 +10,7 @@ class AdminCarController extends Controller
     //show cars from db
     public function index(){
         // $cars = Car::all();
-        $cars = Car::paginate(1);
+        $cars = Car::paginate(2);
         return view('cars.car', compact('cars'));
     }
     public function show($id)
@@ -29,14 +29,25 @@ class AdminCarController extends Controller
     }
 
     public function store(Request $request)
-    {
-    $request->validate([
+{
+    $validated = $request->validate([
         'brand' => 'required|string|max:255',
-        'series' => 'required|string|max:255',
+        'user_id' => 'required|numeric',
+        'series' => 'required|unique:cars|max:255',
         'color' => 'required|string|max:255',
         'price_per_day' => 'required|numeric',
         'details' => 'required|string|max:1000',
+    ], [
+        'brand.required' => 'The brand field is mandatory.',
+        'user_id' => 'User ID must be filled in.',
+        'series.required' => 'Please enter the series of the car.',
+        'color.required' => 'Color is required. Please provide a color.',
+        'price_per_day.required' => 'You must specify the price per day.',
+        'price_per_day.numeric' => 'The price must be a valid number.',
+        'details.required' => 'Details are required. Please include some information about the car.',
+        'details.max' => 'Details cannot exceed 1000 characters.',
     ]);
+
 
     $car = new Car($request->all());
     $car->save();
@@ -62,7 +73,7 @@ public function update(Request $request, Car $car)
 
     $car->update($request->all());
 
-    return redirect()->route('cars.all')->with('success', 'Car updated successfully!');
+    return redirect()->route('cars.all')->with('edit_success', 'Car updated successfully!');
 }
 
 

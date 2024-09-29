@@ -11,6 +11,9 @@
     <header class="bg-gray-900 text-white border-b-2 border-yellow-500">
         <div class="container mx-auto flex justify-between items-center py-4">
             <h1 class="text-3xl font-bold text-yellow-500">KRCars</h1>
+            Welcome, 
+        
+        {{ Auth::user()->name }}
             <nav class="flex space-x-4">
                 <a href="{{ route('home') }}" class="text-gray-500 hover:text-yellow-500 hover:border-yellow-500 transition">Home</a>
                 <a href="{{ route('about') }}" class="ml-4 text-gray-500 hover:text-yellow-500 hover:border-yellow-500 transition">About</a>
