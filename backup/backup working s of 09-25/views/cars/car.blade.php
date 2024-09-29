@@ -39,33 +39,9 @@
                 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="row">
-                    <!-- <div class="col-md">
-                        <div class="card">
-                            <div class="card-header">
-                                Add Cars
-                            </div>
-
-                            <div class="card-body">
-                                <form>
-                                    <div class="nb-3">
-                                        <label for="title" class="form-label">Title</label>
-                                        <input type="text" class="form-control" id="title">
-                                        <label for="desc" class="form-label">Title</label>
-                                        <input type="text" class="form-control" id="title">
-                                    </div>
-                                </form> -->
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <table class="min-w-full leading-normal">
                     <thead>
                         <tr>
-                            <th scope="col" class="px-5 py-3 bg-white border-b border-gray-200 text-gray-500 text-left text-sm uppercase font-normal">
-                                ID
-                            </th>
                             <th scope="col" class="px-5 py-3 bg-white border-b border-gray-200 text-gray-500 text-left text-sm uppercase font-normal">
                                 Brand
                             </th>
@@ -90,9 +66,6 @@
                         @foreach ($cars as $car)
                         <tr>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-500">
-                                {{ $car->id }}
-                            </td>
-                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-500">
                                 {{ $car->brand }}
                             </td>
                             <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-gray-500">
@@ -116,11 +89,6 @@
                         @endforeach
                     </tbody>
                 </table>
-
-                <div class="mt-4">
-    {{ $cars->links() }}
-</div>
-
             </div>
         </div>
     </div>

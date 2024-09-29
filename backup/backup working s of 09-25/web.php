@@ -28,6 +28,18 @@ use App\Http\Controllers\UserCarController;
 |
 */
 
+// Public Routes
+// Route::get('/', function () {
+//     return view('home');
+// })->name('home');
+
+// Route::middleware([
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+//     'verified',
+//     'isUser:User' // Apply the IsUser middleware here
+// ])->group(function () {
+    // Route::get('/', [Ucontroller::class, 'home'])->name('home');
     Route::get('/', function () {
     return view('home');
 })->name('home');
@@ -49,13 +61,43 @@ Route::middleware([
     Route::get('/contact-us', [UController::class, 'contact'])->name('contact');
     Route::get('/brand-of-cars', [UController::class, 'brandOfCars'])->name('brand-of-cars');
     Route::get('rent-a-car', [UController::class, 'rentACar'])->name('rent-a-car');
-    //reviewforms
     Route::get('/reviewforms', [UController::class, 'reviewforms'])->name('reviewforms');
-    //indiv post
+   
+    // Route::get('/cars/{id}', [UserCarController::class, 'show'])->name('cars.show');
     Route::get('/indivpost', [UserCarController::class, 'index'])->name('indivpost');
 
+    
+    //new add
+    // Route::get('/cars', [AdminCarController::class, 'index'])->name('cars.index');
+    // Route::get('/cars/{car}', [AdminCarController::class, 'show'])->name('cars.show');
+    // Route::post('/reviews', [UserReviewController::class, 'store'])->name('reviews.store');
 
 });
+
+
+
+
+
+// Route::get('/user{name}',function($name){
+//     return dd('Welcome ',$name);
+// });
+
+// Route::get('/user-list', [UserController::class , 'index'])->middleware('isAdmin:Admin');
+// Route::get('/user-create', [UserController::class , 'create']);
+
+
+
+// Route::get('/dummy-data', [DummyDataController::class, 'index'])->name('dummy-data');
+
+// Authenticated Routes
+// Route::middleware([
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+//     'verified'
+//     ,'isAdmin:Admin'
+// ])->group(function () {
+
+// Admin Routes with middleware to ensure only admins can access
 // Admin Routes
 Route::middleware([
     'auth:sanctum',
@@ -83,60 +125,16 @@ Route::middleware([
     Route::get('/cars', [AdminCarController::class, 'index'])->name('cars.all');
     Route::get('/cars/{id}', [AdminCarController::class, 'show'])->name('cars.show');
    
-    //add new cars
-    // Route for showing the form to create a new car
-    Route::get('/cars/create', [AdminCarController::class, 'create'])->name('cars.create');
+   //add new cars
+   // Route for showing the form to create a new car
+Route::get('/cars/create', [AdminCarController::class, 'create'])->name('cars.create');
 
-    // Route for storing a new car in the database
-    Route::post('/cars', [AdminCarController::class, 'store'])->name('cars.store');
+// Route for storing a new car in the database
+Route::post('/cars', [AdminCarController::class, 'store'])->name('cars.store');
 
     //edit cars
     Route::get('/cars/{car}/edit', [AdminCarController::class, 'edit'])->name('cars.edit');
     Route::put('/cars/{car}', [AdminCarController::class, 'update'])->name('cars.update');
-
-    //dummy deets
-    Route::get('/listcars', [CarController::class, 'index'])->name('listcars');
-    Route::get('/listdetails/{brand}', [CarController::class, 'show'])->name('listdetails');
-
-}); 
-
-
-// Public Routes
-// Route::get('/', function () {
-//     return view('home');
-// })->name('home');
-
-// Route::middleware([
-//     'auth:sanctum',
-//     config('jetstream.auth_session'),
-//     'verified',
-//     'isUser:User' // Apply the IsUser middleware here
-// ])->group(function () {
-    // Route::get('/', [Ucontroller::class, 'home'])->name('home');
-
-    ////
-
-// Route::get('/user{name}',function($name){
-//     return dd('Welcome ',$name);
-// });
-
-// Route::get('/user-list', [UserController::class , 'index'])->middleware('isAdmin:Admin');
-// Route::get('/user-create', [UserController::class , 'create']);
-
-
-
-// Route::get('/dummy-data', [DummyDataController::class, 'index'])->name('dummy-data');
-
-// Authenticated Routes
-// Route::middleware([
-//     'auth:sanctum',
-//     config('jetstream.auth_session'),
-//     'verified'
-//     ,'isAdmin:Admin'
-// ])->group(function () {
-
-// Admin Routes with middleware to ensure only admins can access
-
 
 
     // Route::get('/admin/cars', [AdminCarController::class, 'index'])->name('admin.cars.index');
@@ -156,7 +154,8 @@ Route::middleware([
 // Route::get('/cars/{id}/edit', [AdminCarController::class, 'edit'])->name('editcar');
 // Route::post('/cars/{id}/update', [AdminCarController::class, 'update'])->name('updatecar');
 
-   
+    Route::get('/listcars', [CarController::class, 'index'])->name('listcars');
+    Route::get('/listdetails/{brand}', [CarController::class, 'show'])->name('listdetails');
 // });
 // });
 
@@ -205,4 +204,4 @@ Route::middleware([
 //     Route::get('/posts/submit', function () {
 //         return view('submit-post-user');
 //     })->name('user.posts.submit');
-// });
+});

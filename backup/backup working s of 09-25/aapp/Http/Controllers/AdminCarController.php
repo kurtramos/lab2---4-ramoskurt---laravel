@@ -9,8 +9,7 @@ class AdminCarController extends Controller
 {
     //show cars from db
     public function index(){
-        // $cars = Car::all();
-        $cars = Car::paginate(1);
+        $cars = Car::all();
         return view('cars.car', compact('cars'));
     }
     public function show($id)
