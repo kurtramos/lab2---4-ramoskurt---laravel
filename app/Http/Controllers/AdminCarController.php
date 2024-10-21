@@ -3,29 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminCarController extends Controller
 {
     //show cars from db
-    public function index(){
-        // $cars = Car::all();
-        $cars = Car::paginate(2);
+    // public function index(){
+    //     // $cars = Car::all();
+    //     $cars = Car::paginate(2);
+    //     return view('cars.car', compact('cars'));
+    // }
+    public function index(Request $request)
+    {
+        $sortField = $request->input('sort', 'id'); 
+        $sortOrder = $request->input('order', 'asc'); 
+
+        // Validate sort field
+        if (!in_array($sortField, ['id', 'user_id', 'created_at'])) {
+            $sortField = 'id';
+        }
+
+
+        // Retrieve cars with sorting
+        $cars = Car::orderBy($sortField, $sortOrder)->paginate(3);
+
         return view('cars.car', compact('cars'));
     }
-    public function show($id)
-    {
-    $car = Car::find($id);
-        if (!$car) {
-        return redirect()->back()->with('error', 'Car not found');
-    }
-        return view('car.details', compact('car'));
-    }
-
-    //add new cars
+ 
+    //add new cars, get uers
     public function create()
     {
-    return view('cars.create');
+        // $users = User::all(); // Fetch all users
+        $users = User::where('role', 'admin')->get();
+        return view('cars.create', compact('users')); // Pass users to the view
     }
 
     public function store(Request $request)
@@ -75,57 +86,4 @@ public function update(Request $request, Car $car)
 
     return redirect()->route('cars.all')->with('edit_success', 'Car updated successfully!');
 }
-
-
-
-    // // Display all cars to the admin
-    // public function index()
-    // {
-    //     $cars = Car::all();
-    //     return view('admin.cars.index', compact('cars'));
-    // }
-
-    // // Show the form for creating a new car
-    // public function create()
-    // {
-    //     return view('admin.cars.create');
-    // }
-
-    // // Store a newly created car in storage
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'brand' => 'required|string|max:255',
-    //         'series' => 'required|string|max:255',
-    //         'color' => 'required|string|max:255',
-    //         'price_per_day' => 'required|numeric',
-    //         'details' => 'required|string',
-    //     ]);
-
-    //     Car::create($request->all());
-
-    //     return redirect()->route('cars.index')->with('success', 'Car added successfully!');
-    // }
-
-    // // Show the form for editing the specified car
-    // public function edit(Car $car)
-    // {
-    //     return view('admin.cars.edit', compact('car'));
-    // }
-
-    // // Update the specified car in storage
-    // public function update(Request $request, Car $car)
-    // {
-    //     $request->validate([
-    //         'brand' => 'required|string|max:255',
-    //         'series' => 'required|string|max:255',
-    //         'color' => 'required|string|max:255',
-    //         'price_per_day' => 'required|numeric',
-    //         'details' => 'required|string',
-    //     ]);
-
-    //     $car->update($request->all());
-
-    //     return redirect()->route('cars.index')->with('success', 'Car updated successfully!');
-    // }
 }

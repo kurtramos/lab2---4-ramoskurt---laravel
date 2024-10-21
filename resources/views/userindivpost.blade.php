@@ -64,8 +64,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach ($cars as $car)
                 <div class="car-item text-center bg-gray-900 rounded-lg shadow-md p-4">
+                <h1 class="text-xl font-bold">{{ $car->user_id }} {{ $users->firstWhere('id', $car->user_id)->email ?? 'Unknown User' }}</h1>
                     <img src="{{ $car->image_url }}" alt="Car Image" class="w-full h-48 object-cover rounded-lg mb-4"> <!-- Ensure each car has an 'image_url' attribute -->
                     <h3 class="text-xl font-bold">{{ $car->brand }} {{ $car->series }}</h3>
+                    <p class="text-yellow-500 font-semibold">Color: {{ $car->color }}</p>
                     <p class="text-yellow-500 font-semibold">Price: {{ $car->price_per_day }}/day</p>
                     <p class="text-sm">{{ $car->details }}</p>
                 

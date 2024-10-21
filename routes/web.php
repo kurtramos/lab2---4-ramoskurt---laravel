@@ -40,10 +40,7 @@ Route::middleware([
     'isUser:user' // Ensure this checks the 'user' role
 ])->group(function () {
     Route::get('/user/dashboard', [UController::class, 'dashboard'])->name('user.dashboard');
-    // Other user routes
 
-
-    // Route to user dashboard using UController
     Route::get('/dashboard', [UController::class, 'dashboard'])->name('dashboard');
     Route::get('/about', [UController::class, 'about'])->name('about');
     Route::get('/contact-us', [UController::class, 'contact'])->name('contact');
@@ -81,13 +78,12 @@ Route::middleware([
     //AdminCarController
     //show cars from db
     Route::get('/cars', [AdminCarController::class, 'index'])->name('cars.all');
-    Route::get('/cars/{id}', [AdminCarController::class, 'show'])->name('cars.show');
+    // Route::get('/cars/{id}', [AdminCarController::class, 'show'])->name('cars.show');
    
-    //add new cars
-    // Route for showing the form to create a new car
+    //add new cars form
     Route::get('/cars/create', [AdminCarController::class, 'create'])->name('cars.create');
 
-    // Route for storing a new car in the database
+    // to store new cars in database
     Route::post('/cars', [AdminCarController::class, 'store'])->name('cars.store');
 
     //edit cars
