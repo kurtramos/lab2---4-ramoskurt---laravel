@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('price_per_day', 8, 2);
             $table->text('details');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

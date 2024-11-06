@@ -81,7 +81,7 @@ Route::middleware([
     // Route::get('/cars/{id}', [AdminCarController::class, 'show'])->name('cars.show');
    
     //add new cars form
-    Route::get('/cars/create', [AdminCarController::class, 'create'])->name('cars.create');
+    // Route::get('/cars/create', [AdminCarController::class, 'create'])->name('cars.create');
 
     // to store new cars in database
     Route::post('/cars', [AdminCarController::class, 'store'])->name('cars.store');
@@ -89,6 +89,17 @@ Route::middleware([
     //edit cars
     Route::get('/cars/{car}/edit', [AdminCarController::class, 'edit'])->name('cars.edit');
     Route::put('/cars/{car}', [AdminCarController::class, 'update'])->name('cars.update');
+    // Route::delete('/cars/{car}', [AdminCarController::class, 'delete'])->name('cars.delete');   
+
+    // Soft delete route
+Route::delete('cars/{id}/delete', [AdminCarController::class, 'delete'])->name('cars.delete');
+
+// Restore route (can be POST)
+Route::post('cars/{id}/restore', [AdminCarController::class, 'restore'])->name('cars.restore');
+
+// Permanent delete route
+Route::delete('cars/{id}/forceDelete', [AdminCarController::class, 'forceDelete'])->name('cars.forceDelete');
+
 
     //dummy deets
     Route::get('/listcars', [CarController::class, 'index'])->name('listcars');
