@@ -36,6 +36,7 @@ Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
+    // 'role:user' // Ensure this checks the 'user' role
     'isUser:user' // Ensure this checks the 'user' role
 ])->group(function () {
     Route::get('/user/dashboard', [UController::class, 'dashboard'])->name('user.dashboard');
@@ -65,6 +66,7 @@ Route::middleware([
     })->name('admin.dashboard');
 
     // Admin Dashboard
+    // Route::get('/dashboard', [AController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/cars/add', [AdminCarController::class, 'create'])->name('addcar');
     Route::get('/profile', [AController::class, 'profile'])->name('profile');
     Route::get('/hobbies', [AController::class, 'hobbies'])->name('hobbies');
@@ -77,6 +79,7 @@ Route::middleware([
     //show cars from db
     Route::get('/cars', [AdminCarController::class, 'index'])->name('cars.all');
    
+
    // car store, edit and update
     Route::post('/cars/store', [AdminCarController::class, 'store'])->name('cars.store'); // Store new cars
     Route::get('/cars/edit/{id}', [AdminCarController::class, 'edit'])->name('cars.edit'); // Edit cars
@@ -98,5 +101,3 @@ Route::middleware([
     Route::get('/listdetails/{brand}', [CarController::class, 'show'])->name('listdetails');
 
 }); 
-
-

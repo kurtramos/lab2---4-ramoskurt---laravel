@@ -5,24 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log; 
 use Intervention\Image\Laravel\Facades\Image;
 
 
 class AdminCarController extends Controller
 {
+
     public function index(Request $request)
     {
-        $sortField = $request->input('sort', 'id'); 
-        $sortOrder = $request->input('order', 'asc'); 
-
-        // Validate sort field
-        if (!in_array($sortField, ['id', 'user_id', 'created_at'])) {
-            $sortField = 'id';
-        }
-
+        
         // Retrieve cars with sorting
-        $cars = Car::orderBy($sortField, $sortOrder)->paginate(2);
+        $cars = Car::paginate(2);
         $trashedCars = Car::onlyTrashed()->paginate(2); // Retrieve trashed cars
     
         return view('cars.car', compact('cars', 'trashedCars'));
@@ -125,48 +119,51 @@ public function update(Request $request, $id)
         'imageType' => 'required|in:file,url',
     ]);
 
+    // Find the car record
     $car = Car::findOrFail($id);
 
-    // Set $last_image to the current image path by default
-    $last_image = $car->image;
+    // Prepare the new image path variable, initially set to the existing image
+    $new_image_path = $car->image;
 
-    // Handle file upload if imageType is 'file' and a file is provided
+    // Check if a new image file was uploaded
     if ($request->input('imageType') === 'file' && $request->hasFile('imageFile')) {
-        // Delete the old image from the filesystem if it's not a URL
+        
+        // Delete the old image file if it exists and is a local file (not a URL)
         if ($car->image && filter_var($car->image, FILTER_VALIDATE_URL) === false && file_exists(public_path($car->image))) {
             unlink(public_path($car->image));
         }
 
-        // Store the new image
+        // Store the new image file
         $image = $request->file('imageFile');
-        $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
-        $image->move('images/cars/', $name_gen);
-        $last_image = 'images/cars/' . $name_gen;
-    }
-    // Handle image URL if imageType is 'url' and a URL is provided
-    elseif ($request->input('imageType') === 'url' && $request->filled('imageUrl')) {
-        // Delete the old image from the filesystem if it's not a URL
+        $new_image_name = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('images/cars/'), $new_image_name);
+        $new_image_path = 'images/cars/' . $new_image_name;
+
+    } elseif ($request->input('imageType') === 'url' && $request->filled('imageUrl')) {
+
+        // If a new URL is provided, delete the old image file if it was a local file
         if ($car->image && filter_var($car->image, FILTER_VALIDATE_URL) === false && file_exists(public_path($car->image))) {
             unlink(public_path($car->image));
         }
 
-        // Set the new image path to the URL
-        $last_image = $request->input('imageUrl');
+        // Update the image path to the new URL
+        $new_image_path = $request->input('imageUrl');
     }
 
-    // Update the car record with new data
+    // Update the car record in the database
     $car->update([
         'brand' => $request->input('brand'),
         'series' => $request->input('series'),
         'color' => $request->input('color'),
         'price_per_day' => $request->input('price_per_day'),
         'details' => $request->input('details'),
-        'image' => $last_image, // Set the updated image path
+        'image' => $new_image_path,
         'user_id' => auth()->user()->id,
     ]);
 
     return redirect()->route('cars.all')->with('success', 'Car updated successfully!');
 }
+
 
 
 

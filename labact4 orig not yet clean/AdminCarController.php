@@ -11,16 +11,15 @@ use Intervention\Image\Laravel\Facades\Image;
 
 class AdminCarController extends Controller
 {
+    //show cars from db
+    // public function index(){
+    //     // $cars = Car::all();
+    //     $cars = Car::paginate(2);
+    //     return view('cars.car', compact('cars'));
+    // }
     public function index(Request $request)
     {
-        $sortField = $request->input('sort', 'id'); 
-        $sortOrder = $request->input('order', 'asc'); 
-
-        // Validate sort field
-        if (!in_array($sortField, ['id', 'user_id', 'created_at'])) {
-            $sortField = 'id';
-        }
-
+        
         // Retrieve cars with sorting
         $cars = Car::orderBy($sortField, $sortOrder)->paginate(2);
         $trashedCars = Car::onlyTrashed()->paginate(2); // Retrieve trashed cars
@@ -68,6 +67,8 @@ class AdminCarController extends Controller
             return redirect()->back()->withErrors(['imageUrl' => 'Please enter a valid image URL.'])->withInput();
         }
     
+    // Create a new Car instance
+    // $car = new Car($request->except('imageFile', 'imageUrl'));
 
   // Check if an image file is uploaded
   if ($request->hasFile('imageFile')) {
@@ -78,6 +79,11 @@ class AdminCarController extends Controller
     $image->move('images/cars/', $name_gen);
     $image = Image::read('images/cars/'.$name_gen)
     ->resize(400,200)->save();
+
+    //   $image = $request->file('imageFile');
+    //   $name_gen = hexdec(uniqid()) . '.' . 
+    //   $image->getClientOriginalExtension();
+    //   $image->move('images/cars/', $name_gen);
 
     //   //final image path
     $last_image = 'images/cars/' . $name_gen;
@@ -127,47 +133,43 @@ public function update(Request $request, $id)
 
     $car = Car::findOrFail($id);
 
-    // Set $last_image to the current image path by default
-    $last_image = $car->image;
+    if ($request->input('imageType') === 'file' && !$request->hasFile('imageFile')) {
+        return redirect()->back()->withErrors(['imageFile' => 'Please upload an image file.'])->withInput();
+    }
 
-    // Handle file upload if imageType is 'file' and a file is provided
+    if ($request->input('imageType') === 'url' && !$request->filled('imageUrl')) {
+        return redirect()->back()->withErrors(['imageUrl' => 'Please enter a valid image URL.'])->withInput();
+    }
+
     if ($request->input('imageType') === 'file' && $request->hasFile('imageFile')) {
-        // Delete the old image from the filesystem if it's not a URL
         if ($car->image && filter_var($car->image, FILTER_VALIDATE_URL) === false && file_exists(public_path($car->image))) {
             unlink(public_path($car->image));
         }
-
-        // Store the new image
         $image = $request->file('imageFile');
         $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
         $image->move('images/cars/', $name_gen);
         $last_image = 'images/cars/' . $name_gen;
-    }
-    // Handle image URL if imageType is 'url' and a URL is provided
-    elseif ($request->input('imageType') === 'url' && $request->filled('imageUrl')) {
-        // Delete the old image from the filesystem if it's not a URL
+    } elseif ($request->input('imageType') === 'url' && $request->filled('imageUrl')) {
         if ($car->image && filter_var($car->image, FILTER_VALIDATE_URL) === false && file_exists(public_path($car->image))) {
             unlink(public_path($car->image));
         }
-
-        // Set the new image path to the URL
         $last_image = $request->input('imageUrl');
+    } else {
+        $last_image = $car->image;
     }
 
-    // Update the car record with new data
     $car->update([
         'brand' => $request->input('brand'),
         'series' => $request->input('series'),
         'color' => $request->input('color'),
         'price_per_day' => $request->input('price_per_day'),
         'details' => $request->input('details'),
-        'image' => $last_image, // Set the updated image path
+        'image' => $last_image,
         'user_id' => auth()->user()->id,
     ]);
 
     return redirect()->route('cars.all')->with('success', 'Car updated successfully!');
 }
-
 
 
 

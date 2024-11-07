@@ -107,13 +107,7 @@
                             document.getElementById("fileInput").style.display = (type === "file") ? "block" : "none";
                             document.getElementById("urlInput").style.display = (type === "url") ? "block" : "none";
                         }
-
-                        // Initialize the visibility based on the current value
-                        document.addEventListener('DOMContentLoaded', function() {
-                            toggleImageInput();
-                        });
                     </script>
-
 
                     <div class="flex items-center justify-between">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
