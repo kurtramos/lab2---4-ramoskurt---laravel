@@ -71,45 +71,62 @@
                         <textarea name="details" id="details" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>{{ $car->details }}</textarea>
                     </div>
 
-                    <div class="mb-4">
+                   <!-- image source dropdown -->
+                   <div class="mb-4">
                         <label for="imageType" class="block text-gray-700 text-sm font-bold mb-2">Choose Image Source:</label>
                         <select name="imageType" id="imageType" onchange="toggleImageInput()" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            <option value="file" {{ old('imageType', 'file') == 'file' ? 'selected' : '' }}>Upload Image</option>
+                            <option value="file" {{ old('imageType', 'file') == 'file' ? 'selected' : '' }}>Image Upload</option>
                             <option value="url" {{ old('imageType') == 'url' ? 'selected' : '' }}>Image URL</option>
                         </select>
                     </div>
 
-                    <div class="mb-4" id="fileInput" style="display: {{ old('imageType', 'file') == 'file' ? 'block' : 'none' }};">
+                    <!-- file upload input -->
+                    <div class="mb-4" id="file-upload-container" style="display: {{ old('imageType', 'file') == 'file' ? 'block' : 'none' }};">
                         <label for="imageFile" class="block text-gray-700 text-sm font-bold mb-2">Upload Image:</label>
-                        <input type="file" name="imageFile" id="imageFile" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <input type="file" name="imageFile" id="imageFile" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         @if ($car->image && filter_var($car->image, FILTER_VALIDATE_URL) === false)
                             <img src="{{ asset($car->image) }}" alt="Car Image" class="mt-2 w-20 h-20 object-cover rounded">
                         @endif
                         @error('imageFile')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
 
-                    <div class="mb-4" id="urlInput" style="display: {{ old('imageType') == 'url' ? 'block' : 'none' }};">
-                        <label for="imageUrl" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
-                        <input type="text" name="imageUrl" id="imageUrl" value="{{ old('imageUrl', $car->image) }}" placeholder="https://example.com/image.jpg" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <!-- image url input -->
+                    <div class="mb-4" id="url-upload-container" style="display: {{ old('imageType') == 'url' ? 'block' : 'none' }};">
+                        <label for="imageUrl" class="block text-gray-700 text-sm font-bold mb-2">Enter Image URL:</label>
+                        <input type="url" name="imageUrl" id="imageUrl" value="{{ old('imageUrl', $car->image) }}" placeholder="https://example.com/image.jpg" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         @if ($car->image && filter_var($car->image, FILTER_VALIDATE_URL))
                             <img src="{{ $car->image }}" alt="Car Image" class="mt-2 w-20 h-20 object-cover rounded">
                         @endif
                         @error('imageUrl')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <script>
+                        //  toggle the visibility of the input fields based on the selected image source
                         function toggleImageInput() {
-                            var type = document.getElementById("imageType").value;
-                            document.getElementById("fileInput").style.display = (type === "file") ? "block" : "none";
-                            document.getElementById("urlInput").style.display = (type === "url") ? "block" : "none";
+                            var imageType = document.getElementById("imageType").value;
+                            var fileUploadContainer = document.getElementById("file-upload-container");
+                            var urlUploadContainer = document.getElementById("url-upload-container");
+                            
+                            // show relevant input field based on the selected image type
+                            if (imageType === "file") {
+                                fileUploadContainer.style.display = "block";
+                                urlUploadContainer.style.display = "none";
+                                // clear  URL field if it was visible
+                                document.getElementById("imageUrl").value = "";
+                            } else {
+                                fileUploadContainer.style.display = "none";
+                                urlUploadContainer.style.display = "block";
+                                // Clear the file input if it was visible
+                                document.getElementById("imageFile").value = "";
+                            }
                         }
 
-                        // Initialize the visibility based on the current value
-                        document.addEventListener('DOMContentLoaded', function() {
+                        // initialize the visibility on page load based on the selected value
+                        document.addEventListener('DOMContentLoaded', function () {
                             toggleImageInput();
                         });
                     </script>

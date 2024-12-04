@@ -62,9 +62,9 @@
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="px-4 py-5 sm:px-6 text-center">
                 <h3 class="text-lg font-medium leading-6 text-gray-900">Cars List</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500 mx-auto">Details of all the cars listed in our database.</p>
+                <!-- <p class="mt-1 max-w-2xl text-sm text-gray-500 mx-auto">Details of all the cars listed in our database.</p> -->
 
-                <!-- Success Message -->
+                <!-- success message -->
                 @if (session('success'))
                     <div class="bg-green-500 text-white p-4 rounded mb-4 relative">
                         <strong>{{ session('success') }}</strong>
@@ -74,7 +74,7 @@
                     </div>
                 @endif
 
-                <!-- Edit Success Message -->
+                <!-- edit success message -->
                 @if (session('edit_success'))
                     <div class="bg-blue-500 text-white p-4 rounded mb-4 relative">
                         <strong>{{ session('edit_success') }}</strong>
@@ -84,7 +84,7 @@
                     </div>
                 @endif
 
-                <!-- Soft Delete Message -->
+                <!-- soft delete -->
                 @if (session('soft_delete'))
                     <div class="bg-blue-500 text-white p-4 rounded mb-4 relative">
                         <strong>{{ session('soft_delete') }}</strong>

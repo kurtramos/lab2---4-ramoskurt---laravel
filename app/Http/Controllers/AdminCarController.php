@@ -13,20 +13,21 @@ class AdminCarController extends Controller
 {
     public function index(Request $request)
     {
-        $sortField = $request->input('sort', 'id'); 
-        $sortOrder = $request->input('order', 'asc'); 
-
-        // Validate sort field
-        if (!in_array($sortField, ['id', 'user_id', 'created_at'])) {
-            $sortField = 'id';
-        }
-
-        // Retrieve cars with sorting
-        $cars = Car::orderBy($sortField, $sortOrder)->paginate(2);
-        $trashedCars = Car::onlyTrashed()->paginate(2); // Retrieve trashed cars
+        $sortField = $request->input('sort', 'created_at'); 
+        $sortOrder = $request->input('order', 'desc'); 
     
+        // validate sort field
+        if (!in_array($sortField, ['id', 'user_id', 'created_at'])) {
+            $sortField = 'created_at';
+        }
+    
+        // retrieve cars with sorting
+        $cars = Car::orderBy($sortField, $sortOrder)->paginate(2);
+        $trashedCars = Car::onlyTrashed()->orderBy($sortField, $sortOrder)->paginate(2); 
+        
         return view('cars.car', compact('cars', 'trashedCars'));
     }
+    
     
  
     //add new cars, get uers
@@ -69,7 +70,7 @@ class AdminCarController extends Controller
         }
     
 
-  // Check if an image file is uploaded
+  // checking if image file is
   if ($request->hasFile('imageFile')) {
     //insert data
     $image = $request->file('imageFile');
@@ -79,7 +80,7 @@ class AdminCarController extends Controller
     $image = Image::read('images/cars/'.$name_gen)
     ->resize(400,200)->save();
 
-    //   //final image path
+    // final image path
     $last_image = 'images/cars/' . $name_gen;
 
 
@@ -141,6 +142,9 @@ public function update(Request $request, $id)
         $image = $request->file('imageFile');
         $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
         $image->move('images/cars/', $name_gen);
+        $image = Image::read('images/cars/'.$name_gen)
+        ->resize(400,200)->save();
+    
         $last_image = 'images/cars/' . $name_gen;
     }
     // Handle image URL if imageType is 'url' and a URL is provided
@@ -197,14 +201,21 @@ public function restore($id)
 
 public function forceDelete($id)
 {
-    $car = Car::withTrashed()->findOrfail($id);
-    if ($car->image && file_exists(public_path($car->image))) {
-        unlink(public_path($car->image));
+    $car = Car::withTrashed()->findOrFail($id);
+    
+    // Check if the image is a local file and exists in the folder, then delete it
+    if ($car->image && filter_var($car->image, FILTER_VALIDATE_URL) === false) {
+        $imagePath = public_path($car->image);
+        if (file_exists($imagePath)) {
+            unlink($imagePath); // Delete the image file
+        }
     }
 
-    $car->forceDelete(); // Permanently delete
-    return redirect()->route('cars.all')->with('permanent_delete', 'Car permanently deleted.');
+    $car->forceDelete(); // Permanently delete the car record from the database
+
+    return redirect()->route('cars.all')->with('permanent_delete', 'Car permanently deleted and image removed from server.');
 }
+
 
 
 }
